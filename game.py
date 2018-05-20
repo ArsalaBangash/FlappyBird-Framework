@@ -19,11 +19,7 @@ IMAGES, SOUNDS, HITMASKS = {}, {}, {}
 # list of all possible players (tuple of 3 positions of flap)
 PLAYERS_LIST = (
     # red bird
-    (
-        'assets/sprites/redbird-upflap.png',
-        'assets/sprites/redbird-midflap.png',
-        'assets/sprites/redbird-downflap.png',
-    ),
+    red_bird,
     # blue bird
     (
         # amount by which base can maximum shift to left
@@ -139,6 +135,11 @@ def main():
 
 def showWelcomeAnimation():
     """Shows welcome screen animation of flappy bird"""
+    # Welcome message
+
+    
+
+    
     # index of player to blit on screen
     playerIndex = 0
     playerIndexGen = cycle([0, 1, 2, 1])
