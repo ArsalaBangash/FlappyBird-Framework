@@ -166,7 +166,7 @@ def showWelcomeAnimation():
                 sys.exit()
             if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
                 # make first flap sound and return values for mainGame
-                SOUNDS['wing'].play()
+                SOUNDS['die'].play()
                 return {
                     'playery': playery + playerShmVals['val'],
                     'basex': basex,
@@ -238,7 +238,7 @@ def mainGame(movementInfo):
                 if playery > -2 * IMAGES['player'][0].get_height():
                     playerVelY = playerFlapAcc
                     playerFlapped = True
-                    SOUNDS['wing'].play()
+                    SOUNDS['die'].play()
 
         # check for crash here
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},

@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     game = FlappyBird()
 
-    title = "FLAPPY"
+    title = "FLAPPY BIRD"
     game.nameScreen(title)
 
     game.loadBackground()
