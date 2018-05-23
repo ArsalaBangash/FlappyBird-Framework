@@ -27,8 +27,20 @@ class FlappyBird:
         self.sounds['swoosh'] = pygame.mixer.Sound('assets/swoosh.wav')
         self.sounds['wing'] = pygame.mixer.Sound('assets/wing.wav')
 
-    def loadBackground(self):
-        self.background = pygame.image.load("assets/background.png").convert()
+    def loadGameOver(self):
+        self.gameOver = pygame.image.load("assets/gameover.png").convert_alpha()
+        self.screen.blit(self.gameOver, (110,300))
+        pygame.display.update()
+
+    def loadGameStart(self):
+        self.gameStart = pygame.image.load("assets/message.png").convert_alpha()
+        self.screen.blit(self.gameStart, (28,20))
+        pygame.display.update()
+        
+    def loadBackground(self, name):
+        self.background = pygame.image.load("assets/"+name+".png").convert()
+        self.screen.blit(self.background, (0,0))
+        pygame.display.update()
 
     def nameScreen(self, title):
         pygame.display.set_caption(title)
@@ -36,15 +48,23 @@ class FlappyBird:
     def playSound(self, soundName):
         self.sounds[soundName].play()
 
-    def loadBird(self):
+    def loadBird(self, color):
         self.bird = pygame.Rect(65,50,50,50)
         self.jump = 0
         self.jumpSpeed = 0
         self.gravity = 5
-        self.dead = False
+        self.over = False
         self.sprite = 0
-        self.birdY = 350
-        self.birdSprites = random.choice([[pygame.image.load("assets/1.png").convert_alpha(),
+        self.birdY = 320
+        if color == "yellow":
+            value = 0
+        elif color == "blue":
+            value = 1
+        elif color == "red":
+            value = 2
+
+        
+        spriteList = [[pygame.image.load("assets/1.png").convert_alpha(),
     						pygame.image.load("assets/2.png").convert_alpha(),
     						pygame.image.load("assets/dead.png")],
                             [pygame.image.load("assets/bluebird-downflap.png").convert_alpha(),
@@ -52,7 +72,12 @@ class FlappyBird:
                             pygame.image.load("assets/dead.png")],
                             [pygame.image.load("assets/redbird-downflap.png").convert_alpha(),
                             pygame.image.load("assets/redbird-upflap.png").convert_alpha(),
-                            pygame.image.load("assets/dead.png")]])
+                            pygame.image.load("assets/dead.png")]]
+
+        self.birdSprites = spriteList[value]
+        
+        self.screen.blit(self.birdSprites[self.sprite], (70, self.birdY))
+        pygame.display.update()
 
     def loadWalls(self, gap):
    		self.wallUp = pygame.image.load("assets/bottom.png").convert_alpha()
@@ -60,11 +85,13 @@ class FlappyBird:
    		self.gap = gap
    		self.wallx = 400
 
-    def updateWalls(self):
-        self.wallx -= 2
+    def updateWalls(self, speed):
+        self.wallx -= speed
         if self.wallx < -80:
             self.wallx = 400
             self.offset = random.randint(-110, 110)
+
+        self.showWalls()
 
     def birdUpdate(self):
         if self.jump:
@@ -108,21 +135,27 @@ class FlappyBird:
 
     def getEvent(self):
     	return pygame.event.get()
-
-    def exit():
-    	sys.exit()
-
+        
     def birdJump(self):
     	self.jump = 17
     	self.gravity = 5
     	self.jumpSpeed = 10
+    	self.updateBirdImage()
+    	self.birdUpdate()
 
+    def updateScore(self):
+        self.screen.blit(font.render(str(self.score), -1, (255,255,255)), (200,50))
+        
     def updateScreen(self):
     	self.screen.fill((255,255,255))
     	self.screen.blit(self.background, (0,0))
-    	self.screen.blit(self.wallUp, (self.wallx, 360+self.gap-self.offset))
-    	self.screen.blit(self.wallDown, (self.wallx, 0-self.gap-self.offset))
-    	self.screen.blit(font.render(str(self.score), -1, (255,255,255)), (200,50))
+    	#self.screen.blit(self.wallUp, (self.wallx, 360+self.gap-self.offset))
+    	#self.screen.blit(self.wallDown, (self.wallx, 0-self.gap-self.offset))
+    	#self.screen.blit(font.render(str(self.score), -1, (255,255,255)), (200,50))
+
+    def showWalls(self):
+        self.screen.blit(self.wallUp, (self.wallx, 360+self.gap-self.offset))
+        self.screen.blit(self.wallDown, (self.wallx, 0-self.gap-self.offset))
 
     def updateBirdImage(self):
     	if self.dead:
@@ -135,135 +168,134 @@ class FlappyBird:
     	if not self.dead:
     		self.sprite = 0
 
+    def wallPassed(self):
+        return self.wallx >= -1 and self.wallx <= 0
 
-#The following is a suggested solution
-#TODO: Add flexibility/more coding for the students
+
+    def flap(self):
+        self.updateScreen()
+        self.updateBirdImage()
+        self.birdUpdate()
+
+    def birdOffScreen(self):
+        return not 0 < game.bird[1] < 720
+
+def closeGame():
+    pygame.quit()
+
+def escapePressed(events):
+    for event in events:
+        if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+            return True
+    return False
+
+def mouseClick(events):
+    for event in events:
+        if event.type == MOUSECLICK:
+            return True
+    return False
+
+def checkWhichButtonsPressed():
+    return pygame.event.get()
+
+def updateScreen():
+    pygame.display.update()
+
+def updateScoreDisplay(game):
+    #pygame.font.init()
+    # numbers sprites for score display
+    IMAGES = {}
+    
+    IMAGES['numbers'] = (
+        pygame.image.load('assets/sprites/0.png').convert_alpha(),
+        pygame.image.load('assets/sprites/1.png').convert_alpha(),
+        pygame.image.load('assets/sprites/2.png').convert_alpha(),
+        pygame.image.load('assets/sprites/3.png').convert_alpha(),
+        pygame.image.load('assets/sprites/4.png').convert_alpha(),
+        pygame.image.load('assets/sprites/5.png').convert_alpha(),
+        pygame.image.load('assets/sprites/6.png').convert_alpha(),
+        pygame.image.load('assets/sprites/7.png').convert_alpha(),
+        pygame.image.load('assets/sprites/8.png').convert_alpha(),
+        pygame.image.load('assets/sprites/9.png').convert_alpha()
+    )
+
+    scoreDigits = [int(x) for x in list(str(game.score))]
+    totalWidth = 0 # total width of all numbers to be printed
+
+    for digit in scoreDigits:
+        totalWidth += IMAGES['numbers'][digit].get_width()
+
+    Xoffset = (400 - totalWidth) / 2
+
+    for digit in scoreDigits:
+        game.screen.blit(IMAGES['numbers'][digit], (Xoffset,50))
+        Xoffset += IMAGES['numbers'][digit].get_width()
+
+    
+    #return pygame.font.SysFont(fontName, fontSize)
+
+def newGameCheck(game):
+    while True:
+        buttonsPressed = checkWhichButtonsPressed()
+        if escapePressed(buttonsPressed):
+            closeGame()
+        if mouseClick(buttonsPressed):
+            game.resetGame()
+            return None
+
+def checkForStart(game):
+    while True:
+        buttonsPressed = checkWhichButtonsPressed()
+        if escapePressed(buttonsPressed):
+            closeGame()
+        if mouseClick(buttonsPressed):
+            game.resetGame()
+            return None
 
 if __name__ == "__main__":
-
     game = FlappyBird()
+    gameSpeed = 2
+    wallGap = 150
 
-    title = "FLAPPY BIRD"
-    game.nameScreen(title)
+    game.loadBackground("day")
+    game.loadBird("red")
 
-    game.loadBackground()
-    game.loadBird()
+    game.loadGameStart()
+    checkForStart(game)
 
-    gap = 200
-
-    game.loadWalls(gap)
+    game.loadWalls(wallGap)
     
     clock = game.getClock()
-    pygame.font.init()
-
-    fontName = "Arial"
-    fontSize = 50
-
-    font = pygame.font.SysFont(fontName, fontSize)
-    gameSpeed = 60
-
+    
     while True:
-    	clock.tick(gameSpeed)
+        clock.tick(60)
 
-    	buttonsPressed = game.getEvent()
+        buttonsPressed = checkWhichButtonsPressed()
 
-    	for button in buttonsPressed:
+        if escapePressed(buttonsPressed):
+            closeGame()
 
-    		if button.type == QUIT:
-    			game.exit()
+        if mouseClick(buttonsPressed) and game.birdNotDead():
+            game.birdJump()
 
-    		if button.type == MOUSECLICK and game.birdNotDead():
-    			game.playSound("wing")
-    			game.birdJump()
+        game.flap()
+        
+        game.updateWalls(gameSpeed)
 
+        if game.wallPassed() and game.birdNotDead():
+            game.score = game.score + 1 #This can be a fcn but we think its good for them to learn
 
-    	game.updateScreen()
-    	game.updateBirdImage()
+        updateScoreDisplay(game)
 
-    	#If we want score to increment by 1 let if condition be < -80 (could be hard to explain, 0 seems like an easy number)
-    	if game.wallx <= -80:
-    		game.score = game.score + 1
+        if game.checkHitBottomPipe() == True:
+            game.over = True
 
-    	game.updateWalls()
-    	game.birdUpdate()
-
-    	if game.checkHitBottomPipe() == True:
-    		game.playSound("die")
-    		game.dead = True
-
-    	if game.checkHitTopPipe() == True:
-    		game.dead = True
+        if game.checkHitTopPipe() == True:
+            game.over = True
 
     	#If bird out of bounds
-    	if not 0 < game.bird[1] < 720:
-    		game.resetGame()
-
-    	pygame.display.update()
-
-
-
-
-
-'''
-if __name__ == "__main__":
-
-    game = FlappyBird()
-
-    title = _____ #What do you want the screent o be called?
-    game.nameScreen(title)
-
-    game.loadBackground()
-    game.loadBird()
-
-    gap = ______ #How big do you want the space to be between the pipes?
-    
-    game.loadWalls(gap)
-    
-    
-    clock = game.getClock()
-    pygame.font.init()
-
-    fontName = ____ #Try some of your favorite fonts like "Arial" (string)
-    fontSize = ____ #How big do you want the score to be (int)
-
-    font = pygame.font.SysFont(fontName, fontSize)
-
-    gameSpeed = _____ #Change this up, what do you think it does? What type does it need to be?
-
-    while ______: #We want the game to keep running, so what should we put in here?
-
-        clock.tick(gameSpeed)
-
-        buttonsPressed = game.getEvent()
-
-        for ______ in ________: #Answer: button (or whatever variable name you want) in buttonsPressed
-
-            if button.type == _______: #Use the global QUIT
-                ________ #Lets close the window since the user clicked X, game.exit()
-
-            if button.type == ________ and _____________: #Use the global MOUSECLICK, the second blank is to check if the bird is dead game.birdNotDead()
-            	game.playSound(_______) #What sound do you want to play? (give them a list of the sounds available)
-                _________ #Since the bird isnt dead and the user clicked, we want it to jump so game.birdJump()
-
-        game.updateScreen()
-        game.updateBirdImage()
-
-        if game.wallx < -80:
-            game.score = game.score + _____ #How much do you want the score to increase by?
-
-        game.updateWalls()
-        game.birdUpdate()
-
-        if game.checkHitBottomPipe() == ______: #What goes in here? (True)
-        	game.playSound(_______) #What sound do you want to play? (give them a list of the sounds available)
-            game.dead = True
-
-        if game.checkHitTopPipe() == ____: #How about here? (True)
-            game.dead = True
-
-        #If bird out of bounds
-        if not 0 < game.bird[1] < 720:
-            ___________ #If the bird is out of bounds we want to call game.resetGame()
-
-        pygame.display.update()
-'''
+        if game.birdOffScreen():
+            game.loadGameOver()
+            newGameCheck(game)
+                
+        updateScreen()

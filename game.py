@@ -22,7 +22,6 @@ PLAYERS_LIST = (
     red_bird,
     # blue bird
     (
-        # amount by which base can maximum shift to left
         'assets/sprites/bluebird-upflap.png',
         'assets/sprites/bluebird-midflap.png',
         'assets/sprites/bluebird-downflap.png',
