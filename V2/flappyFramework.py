@@ -118,17 +118,17 @@ class FlappyBird:
     def resetGame(self):
         self.bird[1] = 50
         self.birdY = 50
-        self.dead = False
+        self.over = False
         self.score = 0
         self.wallx = 400
         self.offset = random.randint(-110, 110)
         self.gravity = 5
 
     def birdNotDead(self):
-    	return not self.dead
+    	return not self.over
 
     def birdDead(self):
-    	return self.dead
+    	return self.over
 
     def getClock(self):
     	return pygame.time.Clock()
@@ -158,14 +158,14 @@ class FlappyBird:
         self.screen.blit(self.wallDown, (self.wallx, 0-self.gap-self.offset))
 
     def updateBirdImage(self):
-    	if self.dead:
+    	if self.over:
     		self.sprite = 2
     	elif self.jump:
     		self.sprite = 1
 
     	self.screen.blit(self.birdSprites[self.sprite], (70, self.birdY))
 
-    	if not self.dead:
+    	if not self.over:
     		self.sprite = 0
 
     def wallPassed(self):
