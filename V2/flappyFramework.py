@@ -34,7 +34,9 @@ class FlappyBird:
 
     def loadGameStart(self):
         self.gameStart = pygame.image.load("assets/message.png").convert_alpha()
+        self.base = pygame.image.load("assets/base.png").convert()
         self.screen.blit(self.gameStart, (28,20))
+        self.screen.blit(self.base, (0,650))
         pygame.display.update()
         
     def loadBackground(self, name):
@@ -244,13 +246,25 @@ def newGameCheck(game):
             return None
 
 def checkForStart(game):
+
+    baseOffset = 10
+    x = 0
     while True:
+    
         buttonsPressed = checkWhichButtonsPressed()
         if escapePressed(buttonsPressed):
             closeGame()
         if mouseClick(buttonsPressed):
             game.resetGame()
             return None
+
+        x += 1
+        if x % 200000 == 0:
+            print(x)
+            baseOffset = baseOffset * -1
+            game.screen.blit(game.base, (baseOffset,650))
+            pygame.display.update()
+
 
 if __name__ == "__main__":
     game = FlappyBird()
