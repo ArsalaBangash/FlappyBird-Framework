@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *  # noqa
 import sys
 import random
-
+from flappy import *
 
 global QUIT, MOUSECLICK
 QUIT = pygame.QUIT
@@ -19,7 +19,7 @@ class FlappyBird:
         self.offset = random.randint(-110, 110)
 
         pygame.init()
-
+        
         self.sounds = {}
         self.sounds['die'] = pygame.mixer.Sound('assets/die.wav')
         self.sounds['hit'] = pygame.mixer.Sound('assets/hit.wav')
@@ -268,11 +268,16 @@ def checkForStart(game):
 
 if __name__ == "__main__":
     game = FlappyBird()
-    gameSpeed = 2
-    wallGap = 150
 
-    game.loadBackground("day")
-    game.loadBird("red")
+    GameName = game_name
+    pygame.display.set_caption(GameName)
+    gameSpeed = game_speed
+    wallGap = 150
+    gameBackground = game_background
+    game.loadBackground(gameBackground)
+    
+    game_Color = game_color
+    game.loadBird(game_Color)
 
     game.loadGameStart()
     checkForStart(game)
