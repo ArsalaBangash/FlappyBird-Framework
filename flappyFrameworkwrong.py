@@ -19,7 +19,7 @@ class FlappyBird:
         self.offset = random.randint(-110, 110)
 
         pygame.init()
-
+        
         self.sounds = {}
         self.sounds['die'] = pygame.mixer.Sound('assets/die.wav')
         self.sounds['hit'] = pygame.mixer.Sound('assets/hit.wav')
@@ -268,11 +268,16 @@ def checkForStart(game):
 
 if __name__ == "__main__":
     game = FlappyBird()
-    gameSpeed = 2
-    wallGap = 150
 
-    game.loadBackground("day")
-    game.loadBird("red")
+    GameName = game_name
+    pygame.display.set_caption(GameName)
+    gameSpeed = game_speed
+    wallGap = 150
+    gameBackground = game_background
+    game.loadBackground(gameBackground)
+    
+    game_Color = game_color
+    game.loadBird(game_Color)
 
     game.loadGameStart()
     checkForStart(game)
@@ -286,18 +291,26 @@ if __name__ == "__main__":
 
         buttonsPressed = checkWhichButtonsPressed()
 
+
         check_escape(buttonsPressed)
-        click_to_move(game, buttonsPressed) 
-       
+
+        if mouseClick(buttonsPressed) and game.birdNotDead():
+            game.birdJump()
+
         game.flap()
         
         game.updateWalls(gameSpeed)
 
-        score_update(game)
-        
+        if game.wallPassed() and game.birdNotDead():
+            game.score = game.score + 1 #This can be a fcn but we think its good for them to learn
+
         updateScoreDisplay(game)
 
-        Pipe_hit(game)
+        if game.checkHitBottomPipe() == True:
+            game.over = True
+
+        if game.checkHitTopPipe() == True:
+            game.over = True
 
     	#If bird out of bounds
         if game.birdOffScreen():
