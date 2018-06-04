@@ -268,7 +268,7 @@ def checkForStart(game):
 
 if __name__ == "__main__":
     game = FlappyBird()
-    gameSpeed = 2
+    gameSpeed = game_speed
     wallGap = 150
 
     game.loadBackground("day")
@@ -281,23 +281,41 @@ if __name__ == "__main__":
     
     clock = game.getClock()
     
+    task0 = close_game 
+    task1 = bird_jump 
+    task2 = score_update 
+    task3 = pipe_hit_top 
+    task4 = pipe_hit_bottom 
+
     while True:
         clock.tick(60)
 
         buttonsPressed = checkWhichButtonsPressed()
 
-        check_escape(buttonsPressed)
-        click_to_move(game, buttonsPressed) 
-       
+        if task0:
+            closeGame()
+
+    
+        if mouseClick(buttonsPressed) and game.birdNotDead():
+                game.birdJump()
+
         game.flap()
         
         game.updateWalls(gameSpeed)
 
-        score_update(game)
-        
+     
+        if game.wallPassed() and game.birdNotDead():
+                game.score = game.score + 1 #This can be a fcn but we think its good for them to learn
+
         updateScoreDisplay(game)
 
-        Pipe_hit(game)
+
+        if game.checkHitBottomPipe() == True:
+                game.over = True
+
+    
+        if game.checkHitTopPipe() == True:
+                game.over = True
 
     	#If bird out of bounds
         if game.birdOffScreen():
