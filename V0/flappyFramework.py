@@ -268,8 +268,8 @@ def checkForStart(game):
 
 if __name__ == "__main__":
     game = FlappyBird()
-    gameSpeed = 2
-    wallGap = 150
+    gameSpeed = 5
+    wallGap = 350
 
     game.loadBackground("day")
     game.loadBird("red")

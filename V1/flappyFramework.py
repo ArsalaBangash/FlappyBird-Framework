@@ -286,23 +286,23 @@ if __name__ == "__main__":
         
         buttonsPressed = checkWhichButtonsPressed()
         
+        check_escape(buttonsPressed)
 
-        check_escape()
-        click_to_move()
-       
+        click_to_move(game, buttonsPressed)
+
         game.flap()
-        
-        game.updateWalls(gameSpeed)
 
-        game.score = score_update()
+        game.updateWalls(gameSpeed)
+    
+        score_update(game) #This can be a fcn but we think its good for them to learn
         
         updateScoreDisplay(game)
-
-        game.over = Pipe_hit()
-
-    	#If bird out of bounds
+        
+        Pipe_hit(game)
+        
+        #If bird out of bounds
         if game.birdOffScreen():
             game.loadGameOver()
             newGameCheck(game)
-                
+        
         updateScreen()
