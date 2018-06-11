@@ -14,7 +14,8 @@ from flappyFramework import *
 '''This is a String Varible'''
 ## This variable controls the name of the game - you can  change its value choose the name of the game {variable = game_name}
 
-
+'''This is a Integer Varible'''
+## This variable controls length of the gap between the pipes of the game - you can  change its value to make the gap larger or smaller between pipes {variable pipe_gap}
 
 
 
